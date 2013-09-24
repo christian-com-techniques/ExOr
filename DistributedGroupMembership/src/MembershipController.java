@@ -1,4 +1,5 @@
-import java.util.ArrayList;
+import java.io.IOException;
+import java.io.StringWriter;
 
 import javax.xml.bind.JAXBContext;
 import javax.xml.bind.JAXBException;
@@ -11,12 +12,19 @@ public class MembershipController {
 
 	
 	
-	public static void sendJoinGroup(String contactIP, String contactPort, MembershipList memList) throws JAXBException {
+	public static void sendJoinGroup(String contactIP, int contactPort, MembershipList memList) throws JAXBException {
 
 		JAXBContext jc = JAXBContext.newInstance(MembershipList.class);
         Marshaller marshaller = jc.createMarshaller();
         marshaller.setProperty(Marshaller.JAXB_FORMATTED_OUTPUT, true);
-        marshaller.marshal(memList, System.out);
+        StringWriter sw = new StringWriter();
+        marshaller.marshal(memList, sw);
+        
+        try {
+			Supplier.send(contactIP, contactPort, sw.toString());
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
         
 	}
 	
