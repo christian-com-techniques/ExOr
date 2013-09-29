@@ -7,55 +7,55 @@ import java.net.UnknownHostException;
 
 public class UserInputHandler implements Runnable {
 
-	// Starts a new thread to get user input while waiting for connections in the primary thread
-	BufferedReader reader = new BufferedReader(new InputStreamReader(System.in));
+    // Starts a new thread to get user input while waiting for connections in the primary thread
+    BufferedReader reader = new BufferedReader(new InputStreamReader(System.in));
     private boolean shouldRun = true;
     private Config conf;
-
-	UserInputHandler(Config conf) {
+    
+    UserInputHandler(Config conf) {
         this.conf = conf;
-	}
-
+    }
+    
     public void kill() {
         this.shouldRun = false;
     }
-
+    
     public static void main(String[] args) throws IOException {
-
+        
         Config conf = new Config("Config/distGrep.conf");
         UserInputHandler handler = new UserInputHandler(conf);
         printOutput(handler.processInput(args));
     }
-
-	public void run() {
-
+    
+    public void run() {
+        
         System.out.println("[" + this.getClass().toString() + "]: Waiting for user input: Started");
-		
-		while(shouldRun) {
-
-			System.out.print("> ");
-
+	
+        while(shouldRun) {
+            
+            System.out.print("> ");
+            
             String userinput = null;
-			try {
-				userinput = reader.readLine();
-			} catch (IOException e) {
+            try {
+                userinput = reader.readLine();
+            } catch (IOException e) {
                 System.err.println("Failed to get user input. " + e);
                 continue;
-			}
+            }
 			
-			if(userinput.equalsIgnoreCase("exit"))
+            if(userinput.equalsIgnoreCase("exit"))
             {
                 System.out.println("[" + this.getClass().toString() + "] Signalling shutdown.");
-				break;
+                break;
             }
 
 
             printOutput(processInput(userinput.split(" ")));
 
-		}
+        }
 
         System.out.println("[" + this.getClass().toString() + "] is dying.");
-	}
+    }
 
     public static void printOutput(Collector[] output){
         if(output == null) {
@@ -93,7 +93,7 @@ public class UserInputHandler implements Runnable {
                 }
 
                 while (splitInput.length > 7) {
-                      splitInput = joinInputAt(splitInput, 6);
+                    splitInput = joinInputAt(splitInput, 6);
                 }
 
                 if(splitInput[5].equalsIgnoreCase("key")) {
